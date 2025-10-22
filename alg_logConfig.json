@@ -1,0 +1,23 @@
+{
+	"outputMode": "ASYNC",
+	"outputFormat": "%^[ %Y-%m-%d %H:%M:%S.%e ] <thread %t> [%n] [%l]%@,%! %v%$\n",
+	"loggers": [
+		{
+			"name": "default",
+			"level": "DEBUG",
+			"sinks": [
+				{
+					"type": "color_console", 
+					"level": "INFO"
+				},
+				{
+					"type": "daily_file",
+					"level": "DEBUG",
+					"fileName": "logs/alg_log.log",
+					"hour": 5,
+					"minute": 0
+				}
+			]
+		}
+	]
+}

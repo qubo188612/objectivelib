@@ -1,0 +1,6 @@
+{
+  "logLevel": "DEBUG",
+  "saveParams": false,
+  "saveParams_test_int_enable": true,
+  "saveParams_test_string_enable": true
+}
