@@ -40,6 +40,14 @@ namespace objectivelib
 */
 	DLL_EXPORTS int OBJ_GetDeviceInfo(int deviceId, char* strDeviceId, char* strFriendlyName, char* strDriverVersion);//获取驱动信息
 
+
+	/*
+获取报错信息
+返回:  0         //正常
+返回:  1         //连接传感器的deviceId要大于等于0，且小于等于MAX_DEVICEID_NUM
+*/
+	DLL_EXPORTS int OBJ_GetErrorInfo(int deviceId, char *err);
+
 /*
 返回:  0         //正常
 返回:  1         //连接传感器的deviceId要大于等于0，且小于等于MAX_DEVICEID_NUM
@@ -83,5 +91,7 @@ namespace objectivelib
 返回:  3		 //获取失败
 */
 	DLL_EXPORTS int OBJ_IsPosition(int deviceId, bool &isready); //是否移动到位
+
+
 }
 #endif

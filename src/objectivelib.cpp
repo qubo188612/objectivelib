@@ -99,7 +99,7 @@ namespace  objectivelib
 		std::cout << "CommitId_Objectivelib: " << strCommitId_appObjectivelib << std::endl;
 	}
 
-	void OBJECTIVELENSCONVERT_Init()
+	void OBJECTIVELIB_Init()
     {
 		std::lock_guard<std::mutex> lock(mtx); // 进入函数时加锁，离开时自动解锁
 		if (b_sdk_init == false)
@@ -304,6 +304,27 @@ namespace  objectivelib
 		return 0;
 	}
 
+	int OBJ_GetErrorInfo(int deviceId, char *err)
+	{
+		std::lock_guard<std::mutex> lock(mtx); // 进入函数时加锁，离开时自动解锁
+		std::string s_err;
+		if (deviceId < 0 || deviceId >= MAX_DEVICEID_NUM)
+		{
+			pushErrorInfo(deviceId, "Device number exceeds threshold");
+			return 1;
+		}
+		if (m_errinfo[deviceId].b_err == false)
+		{
+			s_err = "no err";
+		}
+		else
+		{
+			s_err = m_errinfo[deviceId].str;
+		}
+		strcpy(err, s_err.c_str());
+		return 0;
+	}
+
 	int OBJ_GetDeviceInfo(int deviceId, char* strDeviceId, char* strFriendlyName, char* strDriverVersion)//获取驱动信息
 	{
 		std::lock_guard<std::mutex> lock(mtx); // 进入函数时加锁，离开时自动解锁
@@ -444,9 +465,9 @@ namespace  objectivelib
 		bool result;
 		QVariantMap outinfo;
 		QVariantMap ininfo;
-		ininfo.insert("cmd", "RevolverMoveTo");
+		ininfo.insert("cmd", QString("RevolverMoveTo"));
 		ininfo.insert("pos", QString::fromStdString(targetposition));
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd", Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection, Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "onRevolverMoveTo is err");
 			return 3;
@@ -505,8 +526,8 @@ namespace  objectivelib
 		QString result;
 		QVariantMap outinfo;
 		QVariantMap ininfo;
-		ininfo.insert("cmd", "GetPosition");
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd", Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		ininfo.insert("cmd", QString("GetPosition"));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection,Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "GetPosition is err");
 			return 3;
@@ -573,9 +594,9 @@ namespace  objectivelib
 		bool result;
 		QVariantMap outinfo;
 		QVariantMap ininfo;
-		ininfo.insert("cmd", "IsPosition");
+		ininfo.insert("cmd", QString("IsPosition"));
 		ininfo.insert("pos", QString::fromStdString(m_objectiveinfo[deviceId].targetposition));
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd", Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection, Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "IsPosition is err");
 			return 3;
