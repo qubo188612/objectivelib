@@ -5,6 +5,7 @@
 #include <mutex>
 #include "XTcp.h"
 #include <QVariantMap>
+#include <QThread>
 
 namespace  objectivelib
 {
@@ -97,6 +98,16 @@ namespace  objectivelib
 		std::string strCommitId_appObjectivelib = getCommitID_appObjectivelib();
 		LOG_INFO("default", "CommitId_Objectivelib:" + strCommitId_appObjectivelib);
 		std::cout << "CommitId_Objectivelib: " << strCommitId_appObjectivelib << std::endl;
+	}
+
+	Qt::ConnectionType getconnectionType()
+	{
+		QThread* currentThread = QThread::currentThread();
+		QThread* targetThread = ((QObject*)m_qtobject)->thread();
+		Qt::ConnectionType connectionType = (currentThread != targetThread)
+			? Qt::BlockingQueuedConnection
+			: Qt::DirectConnection;
+		return connectionType;
 	}
 
 	void OBJECTIVELIB_Init()
@@ -467,7 +478,7 @@ namespace  objectivelib
 		QVariantMap ininfo;
 		ininfo.insert("cmd", QString("RevolverMoveTo"));
 		ininfo.insert("pos", QString::fromStdString(targetposition));
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection, Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",getconnectionType(), Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "onRevolverMoveTo is err");
 			return 3;
@@ -527,7 +538,7 @@ namespace  objectivelib
 		QVariantMap outinfo;
 		QVariantMap ininfo;
 		ininfo.insert("cmd", QString("GetPosition"));
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection,Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",getconnectionType(),Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "GetPosition is err");
 			return 3;
@@ -596,7 +607,7 @@ namespace  objectivelib
 		QVariantMap ininfo;
 		ininfo.insert("cmd", QString("IsPosition"));
 		ininfo.insert("pos", QString::fromStdString(m_objectiveinfo[deviceId].targetposition));
-		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",Qt::BlockingQueuedConnection, Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
+		bool success = QMetaObject::invokeMethod((QObject*)m_qtobject, "onOBJcmd",getconnectionType(), Q_RETURN_ARG(QVariantMap, outinfo), Q_ARG(QVariantMap, ininfo));
 		if (false == success) {
 			pushErrorInfo(deviceId, "IsPosition is err");
 			return 3;
